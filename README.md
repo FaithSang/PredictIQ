@@ -1,6 +1,6 @@
-# PredictIQ — Agentic Predictive Maintenance Copilot
+# PredictIQ  Agentic Predictive Maintenance Copilot
 
-Built for **ABB Accelerator 2026 — Theme 1: Agentic Predictive Maintenance Studio**
+Built for **ABB Accelerator 2026  Theme 1: Agentic Predictive Maintenance Studio**
 
 PredictIQ turns raw turbofan sensor data into explainable, actionable maintenance
 recommendations: it predicts Remaining Useful Life (RUL), explains *why* an engine is
@@ -8,15 +8,15 @@ flagged using SHAP, and translates that into plain-English guidance via the Clau
 
 ## What it does
 1. **Predicts** Remaining Useful Life for each engine using XGBoost, trained on NASA's
-   C-MAPSS FD002 dataset (260 engines, 6 operating conditions — a harder, more realistic
+   C-MAPSS FD002 dataset (260 engines, 6 operating conditions, a harder, more realistic
    variant than the commonly-used FD001)
 2. **Compares** three models (Random Forest, XGBoost, LightGBM) on accuracy and training
    time, so the model choice is a defensible decision, not an assumption
-3. **Explains** every prediction using SHAP — both risk-increasing and protective sensor
+3. **Explains** every prediction using SHAP, both risk-increasing and protective sensor
    readings, translated from raw sensor IDs into real physical names (e.g. `s13` →
    "Corrected fan speed")
 4. **Advises**: the Claude API converts the structured SHAP output into a 2-3 sentence,
-   technician-ready recommendation with concrete urgency — the "agentic" layer the
+   technician-ready recommendation with concrete urgency, the "agentic" layer the
    challenge brief explicitly asks for
 
 ## Results
@@ -27,7 +27,7 @@ flagged using SHAP, and translates that into plain-English guidance via the Clau
 | Random Forest | 18.13 | 13.69 | ~68s |
 
 XGBoost was selected as the production model despite LightGBM's marginal edge, because
-its SHAP `TreeExplainer` integration is faster and more mature — prioritizing
+its SHAP `TreeExplainer` integration is faster and more mature, prioritizing
 explainability quality over a ~0.1-cycle RMSE difference.
 
 ## Quick start

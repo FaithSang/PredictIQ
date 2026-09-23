@@ -1,4 +1,4 @@
-# PredictIQ — Instructions to Run
+# PredictIQ: Instructions to Run
 
 ## Setup
 1. Clone the repository: `git clone <your-repo-url>` and `cd predictiq`
