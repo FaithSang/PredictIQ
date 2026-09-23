@@ -1,4 +1,4 @@
-# PredictIQ: Instructions to Run
+# PredictIQ Instructions to Run
 
 ## Setup
 1. Clone the repository: `git clone <your-repo-url>` and `cd predictiq`
@@ -18,18 +18,33 @@ streamlit run app.py
 ```
 This opens the dashboard in your browser (usually http://localhost:8501).
 
+Theming lives in `.streamlit/config.toml` — make sure that folder ships with the repo
+(it's easy to miss since the leading dot hides it in some file browsers).
+
 ## Using the dashboard
-- The fleet overview table on the left lists all engines with predicted Remaining
-  Useful Life (RUL), risk %, and risk tier (HIGH / MEDIUM / LOW).
-- Filter by tier using the sidebar, or select any engine from the dropdown to inspect it.
-- The right panel shows the engine's SHAP risk/protective factor chart and a plain-English
-  maintenance recommendation.
-- By default, recommendations run in **mock mode** (no API cost, no key required) so the
-  full pipeline can be tested for free.
-- To generate live Claude API recommendations: set the `ANTHROPIC_API_KEY` environment
-  variable, then toggle "Use live Claude API" in the sidebar.
+The app walks through three steps:
+
+1. **Choose your data** - use the built-in demo fleet (259 NASA test engines), or upload
+   your own CSV. A "Download template CSV" button shows the exact 26-column format
+   expected (`unit`, `cycle`, `set1`-`set3`, `s1`-`s21`). Both a full multi-machine fleet
+   log and a single machine's readings are supported.
+2. **Fleet risk at a glance** - a color-coded table of every machine's estimated cycles
+   remaining, risk %, and status (HIGH / MEDIUM / LOW), with counts summarized at the top.
+3. **Inspect a machine** - pick any machine to see its SHAP-based risk/protective factor
+   chart (real sensor names, not raw codes) and a plain-English recommendation.
+
+By default, recommendations run in **offline preview mode** (no API cost, no key
+required). To generate live Claude API recommendations:
+- Set the `ANTHROPIC_API_KEY` environment variable
   - PowerShell: `$env:ANTHROPIC_API_KEY="your-key-here"`
   - macOS/Linux: `export ANTHROPIC_API_KEY="your-key-here"`
+- Toggle "Use live Claude API" next to the selected machine's recommendation.
+- If the API call fails (e.g. low credits, invalid key), the app shows a clear error
+  message and automatically falls back to the offline preview rather than crashing.
+
+## Deploying (e.g. Streamlit Community Cloud)
+Add `ANTHROPIC_API_KEY` under the app's Secrets panel (TOML format) instead of a local
+environment variable — the app checks `st.secrets` automatically as a fallback.
 
 ## Optional: rerun model comparison / SHAP sanity checks standalone
 ```
@@ -42,15 +57,15 @@ python advisor.py --mock      # Claude advisory layer, offline test mode
 ## Project structure
 ```
 predictiq/
-├── data/                  # raw NASA files + generated labeled CSVs
-├── .streamlit/            #config.toml files
-├── data_utils.py          # data loading, profiling, RUL labeling
-├── baseline_model.py       # baseline Random Forest + engine-level train/val split
-├── compare_models.py       # RF vs XGBoost vs LightGBM comparison
-├── shap_explain.py         # SHAP explainability (risk + protective factors)
-├── sensor_names.py         # sensor ID -> human-readable name mapping
-├── advisor.py               # Claude API plain-English recommendation layer
-├── app.py                   # Streamlit dashboard (main entry point)
+├── .streamlit/
+│   └── config.toml         # dashboard theme
+├── data/                    # raw NASA files + generated labeled CSVs
+├── data_utils.py            # data loading, profiling, RUL labeling
+├── baseline_model.py         # baseline Random Forest + engine-level train/val split
+├── compare_models.py         # RF vs XGBoost vs LightGBM comparison
+├── shap_explain.py           # SHAP explainability (risk + protective factors)
+├── sensor_names.py           # sensor ID -> human-readable name mapping
+├── advisor.py                # Claude API plain-English recommendation layer
+├── app.py                    # Streamlit dashboard (main entry point)
 └── requirements.txt
-├── README.md
 ```
